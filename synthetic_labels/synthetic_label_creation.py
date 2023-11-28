@@ -1,14 +1,13 @@
 from openai import OpenAI
 import time
 import pandas as pd
+from dotenv import dotenv_values
 
-OPENAI_API_KEY='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'
-
-# config = dotenv_values(".env.local")
+config = dotenv_values('../.env.local')
 
 # Gets the key from the OPENAI_API_KEY environment variable in .env file
 client = OpenAI(
-  api_key = OPENAI_API_KEY,
+  api_key = config['OPENAI_API_KEY'],
 )  
 
 # Define a function to process a batch of reviews
