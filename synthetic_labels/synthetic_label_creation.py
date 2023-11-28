@@ -2,7 +2,7 @@ from openai import OpenAI
 import time
 import pandas as pd
 
-OPENAI_API_KEY='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'
+OPENAI_API_KEY='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'
 
 # config = dotenv_values(".env.local")
 
