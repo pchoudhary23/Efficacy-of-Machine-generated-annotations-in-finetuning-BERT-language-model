@@ -85,7 +85,7 @@ def main(context_dict, questions_dict):
 
         # Save intermediate results in json format to avoid losing progress
         if i%10 == 0 or i == len(context_dict.keys())-1:
-            with open('../data/synthetic_answers_squad_fill.txt', 'w') as json_file:
+            with open('../data/synthetic_answers_squad_validation.txt', 'w') as json_file:
                 json.dump(synthetic_dict, json_file)
                 
     return synthetic_dict
@@ -93,24 +93,26 @@ def main(context_dict, questions_dict):
     
 
 if __name__ == '__main__':
+
+    RUNNING_KEY = 'validation' ## set to "training" or "validation"
+
     # Load the SQuAD dataset
     squad_dataset = load_dataset("squad")
 
     # Access the training and validation sets
-    # train_dataset = squad_dataset["train"][:2500]
-    validation_dataset = squad_dataset["validation"][:2500]
+    dataset = squad_dataset[RUNNING_KEY][:2520]
 
-    context_dict, questions_dict, answers_dict = preprocess_data(validation_dataset)
+    context_dict, questions_dict, answers_dict = preprocess_data(dataset)
 
     print('Total context found -->', len(context_dict.keys()))
 
     synthetic_dict = main(context_dict, questions_dict)
 
-    cleaned_synthetic = clean_data(synthetic_dict)
+    cleaned_synthetic = clean_data(synthetic_dict, f'squad_synthetic_processed_{RUNNING_KEY}')
 
-    ## If using a saved file
-    # with open('synthetic_processed.json', 'r', encoding='utf-8') as f:
-    #     synthetic_dict = json.load(f)
+    # If using a saved file
+    # with open('../data/synthetic_processed_validation.json', 'r', encoding='utf-8') as f:
+    #     cleaned_synthetic = json.load(f)
 
     temp = []
     for key in context_dict.keys():
@@ -118,11 +120,11 @@ if __name__ == '__main__':
             'context': context_dict[key],
             'records': [{'question': q, 'answer': a, 'synthetic_answer': sa} for (q, a, sa) in list(zip(questions_dict[key], 
                                                                                                         answers_dict[key], 
-                                                                                                        cleaned_synthetic[str(key)]))]
+                                                                                                        cleaned_synthetic[key]))]
         })
     
     ## Saving combined data
-    with open('data_original.json', 'w', encoding='utf-8') as f:
+    with open(f'../data/squad_original_{RUNNING_KEY}.json', 'w', encoding='utf-8') as f:
         json.dump(temp, f, ensure_ascii=False, indent=4)
 
     # ## Creating dataframe for original data
@@ -130,6 +132,6 @@ if __name__ == '__main__':
     #     data = json.loads(f.read())
         
     ## Normalizing data
-    df = pd.json_normalize(json.dumps(temp), record_path =['records'], meta=['context'])
+    df = pd.json_normalize(temp, record_path=['records'], meta=['context'])
     
-    df.to_csv('squad_df.csv', index=False)
+    df.to_csv(f'../data/squad_df_{RUNNING_KEY}.csv', index=False)

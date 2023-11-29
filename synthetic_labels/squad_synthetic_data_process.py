@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-def clean_data(data):
+def clean_data(data, cleaned_file_name):
   ## Splitting on newline
   temp = {}
   for key in data.keys():
@@ -22,7 +22,7 @@ def clean_data(data):
     final[key] = [x.replace('Answer: ', '') for x in final[key]]
   
   ## Saving processed synthetic data
-  with open('../data/synthetic_processed.json', 'w', encoding='utf-8') as f:
+  with open(f'../data/{cleaned_file_name}.json', 'w', encoding='utf-8') as f:
       json.dump(final, f, ensure_ascii=False, indent=4)
   clean_data = final
   return clean_data
