@@ -6,3 +6,5 @@ We experiment for 2 taks:
 2. Question answering task: Using a subset of SQUAD dataset
 
 Results show that finetuning BERT model for multiclass classification task generates comparable result with human annotated finetuned model. Though we see significant performance drop for a more complex task such as question asnwering.
+
+You can find the link to the project report here: [Link](https://github.com/pchoudhary23/Efficacy-of-Machine-generated-annotations-in-finetuning-BERT-language-model/blob/main/DLT_Final_Report.pdf)
